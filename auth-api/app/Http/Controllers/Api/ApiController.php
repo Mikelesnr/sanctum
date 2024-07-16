@@ -25,7 +25,7 @@ class ApiController extends Controller
                     'status' => false,
                     'message' => "validation error",
                     'errors' => $validateuser->errors()
-                ], 401);
+                ], 422);
             }
 
             $user = User::create([
@@ -61,7 +61,7 @@ class ApiController extends Controller
                     'status' => false,
                     'message' => "validation error",
                     'errors' => $validateuser->errors()
-                ], 401);
+                ], 422);
             }
 
             if (!Auth::attempt($request->only('email', 'password'))) {
@@ -88,14 +88,24 @@ class ApiController extends Controller
 
     public function profile(Request $request)
     {
-        echo 'jsiajiosjoiji';
-        die;
+        $userData = auth()->user();
+        return response()->json([
+            'status' => true,
+            'message' => "User login successful",
+            'data' => $userData,
+            'id' => auth()->user()->id
+        ], 200);
     }
 
-    // public function logout(Request $request)
-    // {
-    //     //pass
-    // }
+    public function logout()
+    {
+        auth()->user()->tokens()->delete();
+        return response()->json([
+            'status' => true,
+            'message' => "User logged out",
+            'data' => []
+        ], 200);
+    }
 }
 
 //Register, Login, Profile and Logout

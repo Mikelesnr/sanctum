@@ -16,6 +16,8 @@ Route::group([
     //profile
     Route::get("profile", [ApiController::class, "profile"])->name("prof");
 
+    //logout
+    Route::get("logout", [ApiController::class, "logout"]);
 });
 
 // Route::get('/user', function (Request $request) {
