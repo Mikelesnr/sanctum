@@ -47,6 +47,55 @@ class ApiController extends Controller
             ], 500);
         }
     }
+
+    public function login(Request $request)
+    {
+        try {
+            $validateuser = Validator::make($request->all(), [
+                "email" => "required|email",
+                "password" => "required",
+            ]);
+
+            if ($validateuser->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "validation error",
+                    'errors' => $validateuser->errors()
+                ], 401);
+            }
+
+            if (!Auth::attempt($request->only('email', 'password'))) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Email and password do not match with our records",
+                ], 401);
+            }
+
+            $user = User::where("email", $request->email)->first();
+            return response()->json([
+                'status' => true,
+                'message' => "User login successful",
+                'token' => $user->createToken('API TOKEN')->plainTextToken
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function profile(Request $request)
+    {
+        echo 'jsiajiosjoiji';
+        die;
+    }
+
+    // public function logout(Request $request)
+    // {
+    //     //pass
+    // }
 }
 
 //Register, Login, Profile and Logout
